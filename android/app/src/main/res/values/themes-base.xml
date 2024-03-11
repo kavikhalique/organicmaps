@@ -12,6 +12,7 @@
     <item name="android:textColorPrimary">@color/text_dark</item>
     <item name="android:textColorPrimaryInverse">@color/text_light</item>
     <item name="android:textColorSecondary">@color/text_dark_subtitle</item>
+    <item name="bottom_sheet_icon_color">@color/bg_primary</item>
     <item name="android:windowBackground">?windowBackgroundForced</item>
     <item name="android:colorPrimaryDark">@color/bg_primary_dark</item>
     <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
@@ -33,10 +34,13 @@
     <item name="colorBtnHighlight">@color/white_38</item>
     <item name="panel">@color/bg_panel</item>
     <item name="colorLogo">@color/bg_primary</item>
-    <item name="iconTint">@color/black_54</item>
+<!--    <item name="iconTint">@color/black_54</item>-->
     <item name="iconTintDisabled">@color/black_12</item>
     <item name="iconTintActive">@color/yellow</item>
     <item name="iconTintLight">@color/icon_tint_light</item>
+
+<!--    Enhanced UI-->
+    <item name="iconTint">@color/bg_primary</item>
 
     <item name="secondary">@color/text_dark_hint</item>
     <item name="dividerHorizontal">@color/divider</item>
@@ -145,6 +149,7 @@
     <item name="android:textColorPrimary">@color/text_light</item>
     <item name="android:textColorPrimaryInverse">@color/text_dark</item>
     <item name="android:textColorSecondary">@color/text_light_subtitle</item>
+    <item name="bottom_sheet_icon_color">@color/white_secondary</item>
     <item name="android:windowBackground">?windowBackgroundForced</item>
     <item name="android:colorPrimaryDark">@color/bg_primary_dark_night</item>
     <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
