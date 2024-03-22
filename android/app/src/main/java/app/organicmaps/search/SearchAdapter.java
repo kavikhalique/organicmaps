@@ -138,7 +138,8 @@ class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchDataViewHol
 
       formatOpeningHours(mResult);
       UiUtils.setTextAndHideIfEmpty(mDescription, mResult.description.description);
-      UiUtils.setTextAndHideIfEmpty(mRegion, mResult.description.region);
+      if (mRegion != null)
+        mRegion.setText(mResult.getFormattedTitle(mRegion.getContext()));
       UiUtils.setTextAndHideIfEmpty(mDistance, mResult.description.distance.toString(mFrame.getContext()));
     }
 
