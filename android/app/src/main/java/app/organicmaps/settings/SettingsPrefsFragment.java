@@ -254,7 +254,7 @@ public class SettingsPrefsFragment extends BaseXmlSettingsFragment
     if (pref == null)
       return;
 
-    final boolean isHistoryEnabled = Config.isSearchHistoryEnabled();
+    boolean isHistoryEnabled = Config.isSearchHistoryEnabled();
     ((TwoStatePreference) pref).setChecked(isHistoryEnabled);
     pref.setOnPreferenceChangeListener((preference, newValue) -> {
       boolean newVal = (Boolean) newValue;
