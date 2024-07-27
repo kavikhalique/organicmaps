@@ -26,10 +26,12 @@ import app.organicmaps.routing.RoutingController;
 import app.organicmaps.util.Config;
 import app.organicmaps.util.ThemeUtils;
 import app.organicmaps.util.UiUtils;
+import app.organicmaps.util.log.Logger;
 import app.organicmaps.widget.menu.MyPositionButton;
 import app.organicmaps.widget.placepage.PlacePageViewModel;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.badge.BadgeUtils;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.HashMap;
@@ -61,7 +63,7 @@ public class MapButtonsController extends Fragment
   private final Observer<Boolean> mButtonHiddenObserver = this::setButtonsHidden;
   private final Observer<Integer> mMyPositionModeObserver = this::updateNavMyPositionButton;
   private final Observer<SearchWheel.SearchOption> mSearchOptionObserver = this::onSearchOptionChange;
-
+  private final Observer<Boolean> mTrackRecorderObserver = this::updateMenuBadge;
 
   @Nullable
   @Override
@@ -190,6 +192,31 @@ public class MapButtonsController extends Fragment
     return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
   }
 
+  @OptIn(markerClass = ExperimentalBadgeUtils.class)
+  private void updateMenuBadge(Boolean enable)
+  {
+    final View menuButton = mButtonsMap.get(MapButtons.menu);
+    final Context context = getContext();
+    final UpdateInfo info = MapManager.nativeGetUpdateInfo(null);
+    final int count = (info == null ? 0 : info.filesCount);
+    final int verticalOffset = dpToPx(8, context) + dpToPx(Integer.toString(0)
+                                                                  .length() * 5, context);
+
+    Logger.d("kavi", "badge update called");
+    Logger.d("kavi", "Track Recorder state is: " + TrackRecorder.nativeIsEnabled());
+    if (count == 0)
+    {
+      BadgeUtils.detachBadgeDrawable(mBadgeDrawable, menuButton);
+      mBadgeDrawable = BadgeDrawable.create(context);
+      mBadgeDrawable.setMaxCharacterCount(0);
+      mBadgeDrawable.setHorizontalOffset(verticalOffset);
+      mBadgeDrawable.setVerticalOffset(dpToPx(9, context));
+      mBadgeDrawable.setBackgroundColor(getResources().getColor(R.color.base_accent));
+      mBadgeDrawable.setVisible(enable);
+      BadgeUtils.attachBadgeDrawable(mBadgeDrawable, menuButton);
+    }
+  }
+
   @OptIn(markerClass = com.google.android.material.badge.ExperimentalBadgeUtils.class)
   public void updateMenuBadge()
   {
@@ -200,7 +227,8 @@ public class MapButtonsController extends Fragment
       return;
     final UpdateInfo info = MapManager.nativeGetUpdateInfo(null);
     final int count = (info == null ? 0 : info.filesCount);
-    final int verticalOffset = dpToPx(8, context) + dpToPx(Integer.toString(count).length() * 5, context);
+    final int verticalOffset = dpToPx(8, context) + dpToPx(Integer.toString(0)
+                                                                  .length() * 5, context);
     BadgeUtils.detachBadgeDrawable(mBadgeDrawable, menuButton);
     mBadgeDrawable = BadgeDrawable.create(context);
     mBadgeDrawable.setMaxCharacterCount(3);
@@ -210,17 +238,7 @@ public class MapButtonsController extends Fragment
     mBadgeDrawable.setVisible(count > 0);
     BadgeUtils.attachBadgeDrawable(mBadgeDrawable, menuButton);
 
-    if(count == 0)
-    {
-      BadgeUtils.detachBadgeDrawable(mBadgeDrawable, menuButton);
-      mBadgeDrawable = BadgeDrawable.create(context);
-      mBadgeDrawable.setMaxCharacterCount(0);
-      mBadgeDrawable.setHorizontalOffset(verticalOffset);
-      mBadgeDrawable.setVerticalOffset(dpToPx(9, context));
-      mBadgeDrawable.setBackgroundColor(getResources().getColor(R.color.base_accent));
-      mBadgeDrawable.setVisible(TrackRecorder.nativeIsEnabled());
-      BadgeUtils.attachBadgeDrawable(mBadgeDrawable, menuButton);
-    }
+    updateMenuBadge(TrackRecorder.nativeIsEnabled());
   }
 
   private boolean isBehindPlacePage(View v)
@@ -321,6 +339,7 @@ public class MapButtonsController extends Fragment
     mMapButtonsViewModel.getButtonsHidden().observe(activity, mButtonHiddenObserver);
     mMapButtonsViewModel.getMyPositionMode().observe(activity, mMyPositionModeObserver);
     mMapButtonsViewModel.getSearchOption().observe(activity, mSearchOptionObserver);
+    mMapButtonsViewModel.getTrackRecorderState().observe(activity, mTrackRecorderObserver);
   }
 
   public void onResume()

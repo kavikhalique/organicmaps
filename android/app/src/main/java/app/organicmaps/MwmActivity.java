@@ -2275,6 +2275,7 @@ public class MwmActivity extends BaseMwmFragmentActivity
     resetFlags();
     startTracePath(enable);
   }
+
   private void startTracePath(boolean enable)
   {
     if(enable)
@@ -2365,11 +2366,13 @@ public class MwmActivity extends BaseMwmFragmentActivity
 
       Toast.makeText(this, getString(R.string.trace_path_is_on), Toast.LENGTH_SHORT).show();
       TrackRecordingService.startForegroundService(getApplicationContext());
+      mMapButtonsViewModel.setTrackRecorderState(true);
     }
     else
     {
       Toast.makeText(this, getString(R.string.trace_path_is_off), Toast.LENGTH_SHORT).show();
       TrackRecordingService.stopService(getApplicationContext());
+      mMapButtonsViewModel.setTrackRecorderState(false);
     }
   }
 
